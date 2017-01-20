@@ -1,0 +1,70 @@
+body{
+  margin:12px;
+}
+  
+.busy { 
+  position:absolute;
+  top: 40%;
+  left: 50%;
+  z-index: 1;
+}
+
+.tab-content {
+  overflow: visible;
+}
+
+#lang {
+  position:absolute;
+  right: -100px;
+  top: 5px;
+  z-index: 1;
+}
+
+
+#uiCancer label, #uiHospital label {
+  display:none;
+}
+
+#uiLayout {
+  padding-bottom: 10px;
+}
+
+div.radio{
+  //float:left;
+  height:20px;
+  padding-right: 10px;
+}
+
+
+.input {
+  float: left;
+  width: 260px;
+  margin-right: 20px;
+}
+
+.output>div {
+  overflow-y:hidden;
+}
+
+.highcharts {
+  height: 90vh;
+}
+
+.shiny-output-error {
+  visibility: hidden;
+}
+
+.wPanel {
+  width: 260px;
+  min-height: 10px;
+  padding: 10px 15px 10px 15px;
+  margin-bottom: 10px;
+  background-color: #f5f5f5;
+  border: 1px solid #e3e3e3;
+  border-radius: 4px;
+}
+
+
+#svg, #tracking {
+  display:none;
+}

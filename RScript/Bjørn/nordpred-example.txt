@@ -1,0 +1,61 @@
+# Example of use of "nordpred"-functions.
+
+# Nordpred:     R (www.r-project.org) & S-PLUS (www.insightful.com) functions 
+#               for prediction of cancer incidence (as used in the Nordpred project).
+# Written by:	Bjørn Møller and Harald Fekjaer <harald.fekjar@kreftregisteret.no>, 2000-2002
+# See also:	http://www.kreftregisteret.no/software/nordpred
+
+# Reading package:
+source("Nordpred.S")
+
+# Reading data (Colon cancer for Norwegian males)
+indata <- read.table("data//colon-men-Norway.txt",header =T,sep=",",row.names=1)
+inpop1 <- read.table("data//men-Norway.txt",header =T,sep=",",row.names=1)
+inpop2 <- read.table("data//men-Norway-pred.txt",header =T,sep=",",row.names=1)
+
+# Include possible population predictions
+inpop <- cbind(inpop1,inpop2)
+
+# Run predictions:
+est <- nordpred.estimate(cases=indata,pyr=inpop,noperiod=4,startestage=5)
+res <- nordpred.prediction(est,startuseage=6,cuttrend=c(0,.25,.5,.75,.75),recent=T)
+
+# This can also be done in one command:
+res <- nordpred(cases=indata,pyr=inpop,startestage=5,startuseage=6,noperiods=4,cuttrend=c(0,.25,.5,.75,.75))
+
+# The "nordpred"-function can also choose number periods to base predictions on:
+  # This is done by listing candidate number of periods in "noperiods". 
+  # If the goodness of fit test is rejected based on the widest base, 
+  # the first period is exclude etc.
+res <- nordpred(indata,inpop,startestage=5,startuseage=6,noperiods=4:6,cuttrend=c(0,.25,.5,.75,.75))
+
+
+# Or with poisson link function (instead of the powerlink as used in the nordpred predictions):
+est2 <- nordpred.estimate(indata,inpop,4,5,linkfunc="poisson")
+res2 <- nordpred.prediction(est2,startuseage=6,cuttrend=c(0,.25,.5,.75,.75),recent=T)
+
+# Get results:
+print.nordpred(res)
+nordpred.getpred(res)
+summary(res,printpred=F)
+
+# Get results with standardisation:
+wstand <- c(0.12, 0.1, 0.09, 0.09, 0.08, 0.08, 0.06, 0.06, 0.06, 0.06,0.05, 
+            0.04, 0.04, 0.03, 0.02, 0.01, 0.005, 0.005)
+            
+round(nordpred.getpred(res,incidence=T,standpop=NULL),2)
+round(nordpred.getpred(res,incidence=T,standpop=wstand),2)
+
+# Plot results:
+plot(res,standpop=wstand)
+
+# Plot results with power5 and poisson links:
+plot(res2,standpop=wstand)
+plot(res,new=F,lty=c(1,2),standpop=wstand)
+
+# Different cut trend scenarios, using average drift (recent=F):
+plot(nordpred.prediction(est,startuseage=6,cuttrend=c(0,0,0,0,0),recent=F),standpop=wstand,new=T)
+plot(nordpred.prediction(est,startuseage=6,cuttrend=c(1,1,1,1,1),recent=F),standpop=wstand,new=F,lty=c(1,2))
+plot(nordpred.prediction(est,startuseage=6,cuttrend=c(0,.25,.5,.75,.75),recent=F),standpop=wstand,new=F,lty=c(1,4))
+
+
